@@ -94,18 +94,21 @@ init_composer $app $final_path
 
 # Prepare Flarum temp directory
 tmp=/tmp/$app
-sudo mkdir -p $tmp
-sudo chown -R $app:www-data $tmp
-sudo chmod -R 0775 $tmp
+#sudo mkdir -p $tmp
+#sudo chown -R $app:www-data $tmp
+#sudo chmod -R 0775 $tmp
 
-# Install Flarum
-exec_composer $app $final_path "create-project flarum/flarum $tmp $flarum_version --stability=beta --ansi"
+# Retrieve Flarum
+git clone --branch v0.1.0-beta.7 --depth 1 https://github.com/flarum/flarum $tmp
 
 # Copy Flarum to working directory and clean temp directory
 sudo cp -Rf $tmp/* $final_path
 sudo chown -R $app:www-data $final_path
 sudo chmod -R 0775 $final_path
 ynh_secure_remove $tmp
+
+# Install Flarum
+exec_composer $app $final_path install
 
 #=================================================
 # CREATE A MYSQL DATABASE
